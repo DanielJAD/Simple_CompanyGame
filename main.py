@@ -7,36 +7,43 @@ class Employee:
         self.ethic = ethic  # 0 - 10
         self.status = status  # Employed = 1, Not Employed = 0
 
-    def hire(self, hired_list, not_hired_list):
+    def hire(self):
         self.status = 1
-        not_hired_list.remove(self)
-        hired_list.append(self)
 
-    def fire(self, hired_list, not_hired_list):
+    def fire(self):
         self.status = 0
-        hired_list.append(self)
-        not_hired_list.remove(self)
 
 
 class CompanyStats:
-    def __init__(self, funds, employees):
+    def __init__(self, funds = 0):
         self.funds = 1000
         self.employees = []
 
-    def hire(self, person, hired_list, not_hired_list):
-        if person not in hired_list and person in not_hired_list:
-            self.hire(person)
-            person.hire(hired_list, not_hired_list)
+    def hire(self, person, not_hired_list):
+        if person not in self.employees and person in not_hired_list:
+            self.employees.append(person)
+            not_hired_list.remove(person)
+            person.hire()
+
+    def fire(self, person, ):
+        if person not in not_hired_list and person in self.employees:
+            self.employees.remove(person)
+            not_hired_list.append((person))
+            person.fire()
+
 
 
 def readnames(list):
-    for person in list:
-        print(person.name)
+    if len(list) == 0:
+        print(' NONE ')
+    else:
+        for person in list:
+            print(' +  ' + person.name)
 
 
-def employeeReport(hired_list, not_hired_list):
+def employeeReport(company, not_hired_list):
     print(' ------- Employees -------- ')
-    readnames(hired_list)
+    readnames(company.employees)
     print(' __________________________ ')
     print(' ')
     print(' ------- Available For Hire -------- ')
@@ -54,11 +61,13 @@ not_hired_list = [employee1, employee2]
 
 
 def startUp():
-    employees = []
 
-    employee1.hire(employees, not_hired_list)
+    not_hired_list = [employee1, employee2]
+    this_company = CompanyStats()
+    this_company.hire(employee1, not_hired_list)
+    this_company.hire(employee2, not_hired_list)
 
-    employeeReport(employees, not_hired_list)
+    employeeReport(this_company, not_hired_list)
 
     return 0
 
