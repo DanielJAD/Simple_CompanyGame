@@ -1,5 +1,5 @@
-from main import Employee  # as EmployeeEdit
-from main import CompanyStats  # as CompanyStatsEdit
+from main import Employee
+from main import CompanyStats
 import matplotlib.pyplot as plt
 
 
@@ -14,6 +14,21 @@ class EmployeeEdit(Employee):
     def gen_gross_profits(self, time):
         return self.gen_profits(time) - (time * self.wage)
 
+
+class CompanyStatsEdit(CompanyStats):
+    def __init__(self, funds=0, time = 0):
+        super().__init__(funds=0, time=0)
+
+    def gen_gross_company_profits(self, time):
+        print('\nGenerating profits for ' + str(time) + ' days...\n')
+        total = 0
+        for employee in self.employees:
+            total += employee.gen_gross_profits(time)
+        total = round(total * 100) / 100
+        print('Profit made: £' + str(total) + '.')
+        # self.funds += total
+        # print('New company funds: £' + str(self.funds) + '!')
+        return total
 
 worst_employee = EmployeeEdit('Worst Employee', 0, 0, 0, 0, 1, 50)
 best_employee = EmployeeEdit('Best Employee', 0, 10, 10, 10, 1, 500)
@@ -41,7 +56,7 @@ for day in days:
     scenario_6.append(happy_but_low_skill.gen_gross_profits(day))
     scenario_7.append(unhappy_high_skill.gen_gross_profits(day))
 
-fig = plt.figure()
+fig = plt.figure(0)
 plt.plot(days, scenario_1, marker='x', label='Worst Employee')
 #plt.plot(days, scenario_2, marker='o', label='Best Employee')
 plt.plot(days, scenario_3, marker='X', label='An employee')
@@ -52,4 +67,26 @@ plt.plot(days, scenario_7, marker='X', label='UnhappyBut HighSkill')
 plt.title('Comparison of Paying Wages')
 plt.grid(True)
 plt.legend()
+# plt.show()
+
+available_for_hire = [worst_employee, best_employee, an_employee, high_skill_low_ethic, low_skill_great_ethic,
+                      happy_but_low_skill, unhappy_high_skill]
+
+a_company = CompanyStatsEdit()
+# a_company.hire(worst_employee, available_for_hire)
+# a_company.hire(best_employee, available_for_hire)
+a_company.hire(an_employee, available_for_hire)
+a_company.hire(high_skill_low_ethic, available_for_hire)
+
+company_scenario = []
+
+long_days = range(20)
+
+for day in long_days:
+    company_scenario.append(a_company.gen_gross_company_profits(day))
+
+fig2 = plt.figure(1)
+plt.plot(long_days, company_scenario, marker='x')
+plt.title('Company Funds Growth')
+plt.grid(True)
 plt.show()
