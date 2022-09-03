@@ -53,3 +53,52 @@ Will be done in phases due to the high-level of plans currently made above!
 
 ----- Phase 3 --------
 -- SQL integration
+
+_____________________________________________________________________________
+
+03/09/2022
+
+Currently:
+
+The company was created as a class. The employees are a list, an attribute/property, hiring and firing is a method.
+Employee classes have a method for generating profit; a company method for generating profits has been created using a
+    sum of the employee method, for all employees in its property/list.
+
+Funds were added as a property, and initialisation will set this to 1000 unless otherwise specified.
+Generating profits increases the company profits.
+
+Experimentation has occurred;
+- Employee wages? Should these be added now so that gross profits are calculated?
+- The entire algorithm still needs to be explored - scripts were created to see this. However, it may be better to
+explore and update this as scenarios are explored.
+- Currently time jumps are factored into the profit generation to depreciate profits - the concept behind this is to
+discourage "skipping" to the end - but this will be picked up later as other effects are added. Profit generation will
+be simple with time jumps, without this decline in mind. The factor to consider is what a standard jump is expected to
+be - 3 days or a month? Should a user be expected to want to jump only a few days at a time, or weeks?
+- Do aspects like "unhappiness" need to be tied to profit growth, as they appear to be related to ethic? Should instead
+minor processes be added? Consider:
+
+- Ethic is tied to happiness
+- Happiness is tied to their wage and what they feel they should earn (for now a simple model)
+- How much an employee feels they should earn is tied to their expertise (and maybe age?), with later to be added their
+    time spent at the company.
+- Jumping time also sets these mechanisms into action - whether, with their current stats, they're happy etc.
+
+
++ Idea - later add the ability to send employees on training courses - this will make them unable to produce profits and
+ will cost the company money, but their expertise may rise  (depending on ethic??). Random variable to determine whether
+  it will boost happiness/ethic too; a good training course/bad training course. Different durations for the courses,
+  long courses may decrease happiness etc too.
+
+For now - remove detriment of profits with increased time - this will be considered later.
+- Enable skipping of days (1-6) or weeks (1-4) or months (1-3)
+- Continue to explore the profit generation algorithm
+-- A company full of bad employees should fail; there should be a model for this.
+-- A company that steady-states?
+
+
+- Could explore randomly generating employees available for hire .
+-- May need to have them return from a fixed list initially.
+- Add algorithm for what employees feel they are worth.
+-- Will need to add in length of time at company.
+
