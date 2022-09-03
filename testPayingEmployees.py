@@ -37,6 +37,10 @@ high_skill_low_ethic = EmployeeEdit('Sarah Stone', 0, 10, 5, 1, 1, 200)
 low_skill_great_ethic = EmployeeEdit('Roger Danger', 0, 1, 5, 10, 1, 25)
 happy_but_low_skill = EmployeeEdit('Leah Anthony', 0, 1, 10, 5, 1, 60)
 unhappy_high_skill = EmployeeEdit('Lucy Smith', 0, 5, 1, 5, 1, 150)
+a = EmployeeEdit('Bad Employ', 0, 4, 4, 3, 1, 70)
+b = EmployeeEdit('Another Bad', 0, 6, 3, 3, 1, 85)
+
+
 
 days = range(10)
 scenario_1 = []
@@ -55,7 +59,7 @@ for day in days:
     scenario_5.append((low_skill_great_ethic.gen_gross_profits(day)))
     scenario_6.append(happy_but_low_skill.gen_gross_profits(day))
     scenario_7.append(unhappy_high_skill.gen_gross_profits(day))
-
+'''
 fig = plt.figure(0)
 plt.plot(days, scenario_1, marker='x', label='Worst Employee')
 #plt.plot(days, scenario_2, marker='o', label='Best Employee')
@@ -68,15 +72,15 @@ plt.title('Comparison of Paying Wages')
 plt.grid(True)
 plt.legend()
 # plt.show()
-
+'''
 available_for_hire = [worst_employee, best_employee, an_employee, high_skill_low_ethic, low_skill_great_ethic,
-                      happy_but_low_skill, unhappy_high_skill]
+                      happy_but_low_skill, unhappy_high_skill, a, b]
 
 a_company = CompanyStatsEdit()
 # a_company.hire(worst_employee, available_for_hire)
 # a_company.hire(best_employee, available_for_hire)
-a_company.hire(an_employee, available_for_hire)
-a_company.hire(high_skill_low_ethic, available_for_hire)
+a_company.hire(a, available_for_hire)
+a_company.hire(b, available_for_hire)
 
 company_scenario = []
 

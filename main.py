@@ -14,7 +14,7 @@ class Employee:
         self.status = 0
 
     def gen_profits(self, time):
-        return (self.expertise * self.happiness**2 * self.ethic)*(time**0.5)
+        return ((self.expertise/4)**3  * (self.ethic/2)**2 * self.happiness )*time*(0.5)
 
 
 class CompanyStats:
