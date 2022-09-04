@@ -14,11 +14,11 @@ class Employee:
         self.status = 0
 
     def gen_profits(self, time):
-        return ((self.expertise/4)**3  * (self.ethic/2)**2 * self.happiness )*time*(0.5)
+        return ((self.expertise / 4) ** 3 * (self.ethic / 2) ** 2 * self.happiness) * time * 0.5
 
 
 class CompanyStats:
-    def __init__(self, funds=0, time = 0):
+    def __init__(self, funds=0, time=0):
         self.funds = (1000 if funds == 0 else funds)
         self.employees = []
         self.time = time
@@ -47,10 +47,11 @@ class CompanyStats:
         total = 0
         for employee in self.employees:
             total += employee.gen_profits(time)
-        total = round(total*100) / 100
+        total = round(total * 100) / 100
         print('Profit made: £' + str(total) + '.')
         self.funds += total
         print('New company funds: £' + str(self.funds) + '!')
+
 
 def readnames(list):
     if len(list) == 0:
@@ -90,6 +91,5 @@ def startUp():
     return 0
 
 
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     startUp()
