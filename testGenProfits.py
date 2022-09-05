@@ -3,13 +3,13 @@ import matplotlib.pyplot as plt
 # def __init__(self, name, age, expertise, happiness, ethic, status):
 # def __init__(self, funds=0, time = 0):
 
-worst_employee=Employee('Worst Employee', 0, 0,  0,  0,  1)
-best_employee =Employee('Best Employee',  0, 10, 10, 10, 1)
-an_employee = Employee('Jane Doe', 0, 5, 5, 5, 1)
-high_skill_low_ethic = Employee('Sarah Stone', 0, 10, 5, 1, 1)
-low_skill_great_ethic = Employee('Roger Danger', 0, 1, 5, 10, 1)
-happy_but_low_skill = Employee('Leah Anthony', 0, 1, 10, 5, 1)
-unhappy_high_skill = Employee('Lucy Smith', 0, 5, 1, 5, 1)
+worst_employee=Employee('Worst Employee', 0, 0,  0,  0,  1, 0)
+best_employee =Employee('Best Employee',  0, 10, 10, 10, 1, 0)
+an_employee = Employee('Jane Doe', 0, 5, 5, 5, 1, 0)
+high_skill_low_ethic = Employee('Sarah Stone', 0, 10, 5, 1, 1, 0)
+low_skill_great_ethic = Employee('Roger Danger', 0, 1, 5, 10, 1, 0)
+happy_but_low_skill = Employee('Leah Anthony', 0, 1, 10, 5, 1, 0)
+unhappy_high_skill = Employee('Lucy Smith', 0, 5, 1, 5, 1, 0)
 
 days = range(10)
 scenario_1 = []

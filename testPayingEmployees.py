@@ -2,45 +2,19 @@ from main import Employee
 from main import CompanyStats
 import matplotlib.pyplot as plt
 
-
 # def __init__(self, name, age, expertise, happiness, ethic, status):
 # def __init__(self, funds=0, time = 0):
 
-class EmployeeEdit(Employee):
-    def __init__(self, name, age, expertise, happiness, ethic, status, wage):
-        super().__init__(name, age, expertise, happiness, ethic, status)
-        self.wage = wage
 
-    def gen_gross_profits(self, time):
-        return self.gen_profits(time) - (time * self.wage)
-
-
-class CompanyStatsEdit(CompanyStats):
-    def __init__(self, funds=0, time = 0):
-        super().__init__(funds=0, time=0)
-
-    def gen_gross_company_profits(self, time):
-        print('\nGenerating profits for ' + str(time) + ' days...\n')
-        total = 0
-        for employee in self.employees:
-            total += employee.gen_gross_profits(time)
-        total = round(total * 100) / 100
-        print('Profit made: £' + str(total) + '.')
-        # self.funds += total
-        # print('New company funds: £' + str(self.funds) + '!')
-        return total
-
-worst_employee = EmployeeEdit('Worst Employee', 0, 0, 0, 0, 1, 50)
-best_employee = EmployeeEdit('Best Employee', 0, 10, 10, 10, 1, 500)
-an_employee = EmployeeEdit('Jane Doe', 0, 5, 5, 5, 1, 50)
-high_skill_low_ethic = EmployeeEdit('Sarah Stone', 0, 10, 5, 1, 1, 200)
-low_skill_great_ethic = EmployeeEdit('Roger Danger', 0, 1, 5, 10, 1, 25)
-happy_but_low_skill = EmployeeEdit('Leah Anthony', 0, 1, 10, 5, 1, 60)
-unhappy_high_skill = EmployeeEdit('Lucy Smith', 0, 5, 1, 5, 1, 150)
-a = EmployeeEdit('Bad Employ', 0, 4, 4, 3, 1, 70)
-b = EmployeeEdit('Another Bad', 0, 6, 3, 3, 1, 85)
-
-
+worst_employee = Employee('Worst Employee', 0, 0, 0, 0, 1, 50)
+best_employee = Employee('Best Employee', 0, 10, 10, 10, 1, 500)
+an_employee = Employee('Jane Doe', 0, 5, 5, 5, 1, 50)
+high_skill_low_ethic = Employee('Sarah Stone', 0, 10, 5, 1, 1, 200)
+low_skill_great_ethic = Employee('Roger Danger', 0, 1, 5, 10, 1, 25)
+happy_but_low_skill = Employee('Leah Anthony', 0, 1, 10, 5, 1, 60)
+unhappy_high_skill = Employee('Lucy Smith', 0, 5, 1, 5, 1, 150)
+a = Employee('Bad Employ', 0, 4, 4, 3, 1, 70)
+b = Employee('Another Bad', 0, 6, 3, 3, 1, 85)
 
 days = range(10)
 scenario_1 = []
@@ -76,7 +50,7 @@ plt.legend()
 available_for_hire = [worst_employee, best_employee, an_employee, high_skill_low_ethic, low_skill_great_ethic,
                       happy_but_low_skill, unhappy_high_skill, a, b]
 
-a_company = CompanyStatsEdit()
+a_company = CompanyStats()
 # a_company.hire(worst_employee, available_for_hire)
 # a_company.hire(best_employee, available_for_hire)
 a_company.hire(a, available_for_hire)
