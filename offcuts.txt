@@ -1,0 +1,23 @@
+class EmployeeEdit(Employee):
+    def __init__(self, name, age, expertise, happiness, ethic, status, wage):
+        super().__init__(name, age, expertise, happiness, ethic, status)
+        self.wage = wage
+
+    def gen_gross_profits(self, time):
+        return self.gen_profits(time) - (time * self.wage)
+
+
+class CompanyStatsEdit(CompanyStats):
+    def __init__(self, funds=0, time = 0):
+        super().__init__(funds=0, time=0)
+
+    def gen_gross_company_profits(self, time):
+        print('\nGenerating profits for ' + str(time) + ' days...\n')
+        total = 0
+        for employee in self.employees:
+            total += employee.gen_gross_profits(time)
+        total = round(total * 100) / 100
+        print('Profit made: £' + str(total) + '.')
+        # self.funds += total
+        # print('New company funds: £' + str(self.funds) + '!')
+        return total
