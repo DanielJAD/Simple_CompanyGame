@@ -16,6 +16,9 @@ class Employee:
     def gen_profits(self, time):
         return ((self.expertise / 4) ** 3 * (self.ethic / 2) ** 2 * self.happiness) * time * 0.5
 
+    def gen_gross_profits(self, time):
+        return self.gen_profits(time) - (time * self.wage)
+
 
 class CompanyStats:
     def __init__(self, funds=0, time=0):
