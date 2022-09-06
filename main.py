@@ -24,14 +24,6 @@ class Employee:
     def gen_gross_profits(self, time, mod=1):
         return self.gen_profits(time) * mod - (time * self.wage)
 
-    def get_work_status(self):
-        if self.tac <= (self.wage / 50):
-            self.work_status = 'Training'
-            return 'Training'
-        else:
-            self.work_status = 'Working'
-            return 'Working'
-
 
 class CompanyStats:
     def __init__(self, funds=0, time=0):
@@ -70,16 +62,13 @@ class CompanyStats:
         return tot
 
     def gen_company_profits(self, time):
-        # print('\nGenerating profits for ' + str(time) + ' days...\n')
         total = 0
         for employee in self.employees:
             total += employee.gen_profits(time)
         total = round(total * 100) / 100
-        # print('Profit made: £' + str(total) + '.')
         return total
 
     def gen_gross_company_profits(self, time):
-        # print('\nGenerating profits for ' + str(time) + ' days...\n')
         total = 0
         for employee in self.employees:
             if employee.dtw > 0:
@@ -92,8 +81,6 @@ class CompanyStats:
 
         total = round(total * 100) / 100
         print('Profit made: £' + str(total) + '.')
-        # self.funds += total
-        # print('New company funds: £' + str(self.funds) + '!')
         return total
 
 
@@ -227,11 +214,13 @@ def fire_mechanism(company, not_hired_list):
 # Init stuff
 emp1 = Employee('David Miles', 35, 9, 5, 8, 0, 1000)
 emp2 = Employee('Jack White', 25, 7, 4, 2, 0, 500)
-
+emp3 = Employee('Sarah Gold', 30, 6, 6, 4, 0, 400)
+emp4 = Employee('Carl Smith', 53, 9, 5, 4, 0, 1200)
+emp5 = Employee('Lucy Newton', 18, 3, 9, 7, 0, 100)
 
 def startUp():
     # Initialise the people available for hire
-    not_hired_list = [emp1, emp2]
+    not_hired_list = [emp1, emp2, emp3, emp4, emp5]
 
     # Initialise the company
     this_company = CompanyStats()
@@ -244,12 +233,6 @@ def startUp():
             do_something(this_company, in_put, not_hired_list)
         else:
             break
-
-    # this_company.hire(emp1, not_hired_list)
-    # this_company.hire(emp2, not_hired_list)
-    # employeeReport(this_company, not_hired_list)
-    # this_company.gen_company_profits(10)
-    # this_company.profit_report()
 
     return 0
 
