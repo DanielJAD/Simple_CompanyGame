@@ -8,24 +8,24 @@ class Employee:
         self.status = status  # Employed = 1, Not Employed = 0
         self.wage = wage
         self.tac = 0
-        self.work_status = 'Training'
+        self.dtw = (self.wage / 50)  # Time for initial training etc.
 
     def hire(self):
         self.status = 1
 
     def fire(self):
         self.status = 0
-        self.happiness = round(self.happiness/2)  # Getting fired is not an enjoyable experience
+        self.happiness = round(self.happiness / 2)  # Getting fired is not an enjoyable experience
 
     def gen_profits(self, time):
         return (((self.expertise + 2) / 3) ** 3 * ((self.ethic + 2) / 3) ** 1.5 * (
                 (self.happiness + 2) / 2) ** 1.25) * time
 
-    def gen_gross_profits(self, time):
-        return self.gen_profits(time) - (time * self.wage)
+    def gen_gross_profits(self, time, mod=1):
+        return self.gen_profits(time) * mod - (time * self.wage)
 
     def get_work_status(self):
-        if self.tac <= (self.wage/50):
+        if self.tac <= (self.wage / 50):
             self.work_status = 'Training'
             return 'Training'
         else:
@@ -82,7 +82,14 @@ class CompanyStats:
         # print('\nGenerating profits for ' + str(time) + ' days...\n')
         total = 0
         for employee in self.employees:
-            total += employee.gen_gross_profits(time)
+            if employee.dtw > 0:
+                print(employee.name + ' is not available to work for ' +str(employee.dtw) + ' days.')
+                total += employee.gen_gross_profits(min(time, employee.dtw), 0)
+                if time > employee.dtw:
+                    print(employee.name + ' has returned to work.')
+            total += employee.gen_gross_profits(max(0, time - min(time, employee.dtw)))
+            employee.dtw -= max(0, min(employee.dtw, time))
+
         total = round(total * 100) / 100
         print('Profit made: £' + str(total) + '.')
         # self.funds += total
@@ -103,7 +110,10 @@ def read_employee_names(list_employees):
         print(' NONE ')
     else:
         for person in list_employees:
-            print(' +  ' + person.name + ' - time at company - ' + str(person.tac) + ' days.')
+            statement = ' +  ' + person.name + ' - Time at company - ' + str(person.tac) + ' days.'
+            if person.dtw > 0:
+                statement += ' Not available to work (for ' + str(person.dtw) + ' days).'
+            print(statement)
 
 
 def companyReport(company, not_hired_list):
@@ -115,6 +125,7 @@ def companyReport(company, not_hired_list):
         print('No employees. No wages to pay.')
     else:
         print('£' + str(company.employee_wages_tot()) + ' per day.')
+    print('___________________________________')
 
 
 def employeeReport(company, not_hired_list):
