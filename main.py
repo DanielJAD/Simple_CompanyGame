@@ -8,12 +8,14 @@ class Employee:
         self.status = status  # Employed = 1, Not Employed = 0
         self.wage = wage
         self.tac = 0
+        self.work_status = 'Training'
 
     def hire(self):
         self.status = 1
 
     def fire(self):
         self.status = 0
+        self.happiness = round(self.happiness/2)  # Getting fired is not an enjoyable experience
 
     def gen_profits(self, time):
         return (((self.expertise + 2) / 3) ** 3 * ((self.ethic + 2) / 3) ** 1.5 * (
@@ -21,6 +23,14 @@ class Employee:
 
     def gen_gross_profits(self, time):
         return self.gen_profits(time) - (time * self.wage)
+
+    def get_work_status(self):
+        if self.tac <= (self.wage/50):
+            self.work_status = 'Training'
+            return 'Training'
+        else:
+            self.work_status = 'Working'
+            return 'Working'
 
 
 class CompanyStats:
@@ -80,27 +90,36 @@ class CompanyStats:
         return total
 
 
-def readnames(list):
-    if len(list) == 0:
+def readnames(list_people):
+    if len(list_people) == 0:
         print(' NONE ')
     else:
-        for person in list:
+        for person in list_people:
             print(' +  ' + person.name)
+
+
+def read_employee_names(list_employees):
+    if len(list_employees) == 0:
+        print(' NONE ')
+    else:
+        for person in list_employees:
+            print(' +  ' + person.name + ' - time at company - ' + str(person.tac) + ' days.')
 
 
 def companyReport(company, not_hired_list):
     employeeReport(company, not_hired_list)
     print(' ------- Company Funds -------- ')
-    print('Available : £' + str(round(company.funds*100)/100) + '.')
+    print('Available : £' + str(round(company.funds * 100) / 100) + '.')
     print(' - Employee Wages - ')
     if len(company.employees) == 0:
         print('No employees. No wages to pay.')
     else:
         print('£' + str(company.employee_wages_tot()) + ' per day.')
 
+
 def employeeReport(company, not_hired_list):
     print(' ------- Employees -------- ')
-    readnames(company.employees)
+    read_employee_names(company.employees)
     print(' __________________________ ')
     print(' ')
     print(' ------- Available For Hire -------- ')
@@ -126,7 +145,7 @@ def do_something(this_company, input_command, not_hired_list):
     elif input_command.lower() == 'report' or input_command.lower() == 'r':
         print('Company Report...')
         companyReport(this_company, not_hired_list)
-    elif input_command.lower() == 'advance' or input_command.lower() == 'a' or input_command.split(' ')[0].lower()\
+    elif input_command.lower() == 'advance' or input_command.lower() == 'a' or input_command.split(' ')[0].lower() \
             == 'advance' or input_command.split(' ')[0].lower() == 'a':
         if len(input_command.split(' ')) != 1 and input_command.split(' ')[1].isdigit():
             print('Advancing time by ' + str(input_command.split(' ')[1]) + ' days....')
@@ -158,7 +177,7 @@ def hire_mechanism(company, not_hired_list):
               str(person.wage) + '.')
         enum += 1
     choice = 'C'
-    print(' ENUM VALUE IS  ' + str(enum))
+    #  print(' ENUM VALUE IS  ' + str(enum))
     while choice.lower() != 'R' and choice.lower() != 'quit':
         choice = input('Who do you wish to hire? Send R to exit: ')
         if 1 <= int(choice) <= (enum - 1):
@@ -175,10 +194,10 @@ def fire_mechanism(company, not_hired_list):
     enum = 1
     for person in company.employees:
         print(str(enum) + ': ' + person.name + ' - Wage: ' + str(person.wage) + ' - Redundancy cost : ' +
-              str(person.wage*5) + '.')
+              str(person.wage * 5) + '.')
         enum += 1
     choice = 'C'
-    print(' ENUM VALUE IS  ' + str(enum))
+    #  print(' ENUM VALUE IS  ' + str(enum))  - testing purposes
     while choice.lower() != 'R' and choice.lower() != 'quit':
         choice = input('Who do you wish to fire? Send R to exit.')
         if 1 <= int(choice) <= (enum - 1):
@@ -190,6 +209,7 @@ def fire_mechanism(company, not_hired_list):
             else:
                 print('Firing not confirmed. Process exited.')
             break
+
 
 # name, age, expertise, happiness, ethic, status, wage):
 
