@@ -58,9 +58,9 @@ class CompanyStats:
             self.time += 7
             for person in self.employees:
                 if person.expected_wage > person.wage:
-                    person.happiness -= max(0.5, (person.expected_wage/person.wage)/10)
+                    person.happiness -= max(0.5, abs((person.expected_wage/person.wage)/10 + person.happiness/30))
                 else:
-                    person.happiness += min(happiness_inc_cap, (person.expected_wage/person.wage)/10)
+                    person.happiness += min(happiness_inc_cap, abs((person.expected_wage/person.wage)/10 - person.happiness/30))
                 person.happiness = min(10, person.happiness)
                 person.happiness = max(0, person.happiness)
                 person.tac += 7
