@@ -79,6 +79,10 @@ Per week
     
     3 = 3 - 0.5     + x * 3 
     8 = 8 + 0.333   + x * 8
+    
+    dH/dT = 0 = EW - Hx => x = EW/H => dH/dT = EW - (EW/H) * H 
+    
+    H = EW/(EW + 1) - EW*x*H
 '''
 
 happiness_inc_cap = 0.3
