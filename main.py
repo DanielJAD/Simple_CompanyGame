@@ -1,3 +1,5 @@
+import numpy as np
+
 class Employee:
     def __init__(self, name, age, expertise, happiness, ethic, status, wage):
         self.name = name
@@ -9,6 +11,8 @@ class Employee:
         self.wage = wage
         self.tac = 0
         self.dtw = (self.wage / 50)  # Time for initial training etc.
+        self.expected_wage = ((self.expertise + 2) / 2) ** 2 * (((self.ethic + 2) / 2) * ((self.happiness + 2) / 5) *
+                                                          (1 + (self.tac+1)/(20*365)) * (self.age / (20 * 365))) * 750
 
     def hire(self):
         self.status = 1
@@ -44,10 +48,35 @@ class CompanyStats:
             person.fire()
 
     def advance_time(self, days):
-        self.time += days
-        self.funds += self.gen_gross_company_profits(days)
+
+        weeks_adv = int(np.floor((self.time % 7 + days)/7))
+        days_adv = (days + (weeks_adv * 7)) % 7
+        #  print('---- WEEKS ADVANCE - ' + str(weeks_adv))
+        for i in range(1, weeks_adv+1):
+            print('\nA week was advanced... (week ' + str(i) + ')...')
+            self.funds += self.gen_gross_company_profits(7)
+            self.time += 7
+            for person in self.employees:
+                if person.expected_wage > person.wage:
+                    person.happiness -= max(0.5, (person.expected_wage/person.wage)/10)
+                else:
+                    person.happiness += min(happiness_inc_cap, (person.expected_wage/person.wage)/10)
+                person.happiness = min(10, person.happiness)
+                person.happiness = max(0, person.happiness)
+                person.tac += 7
+
+        if days_adv > 0:
+            print('\nAdvancing ' + str(days_adv) + ' days...')
+            self.funds += self.gen_gross_company_profits(days_adv)
+            self.time += days_adv
+            for person in self.employees:
+                person.tac += days_adv
+
+    def show_info(self):
         for person in self.employees:
-            person.tac += days
+            print(person.name + ' - Expected: £' + str(person.expected_wage) + ' - Paid: £' + str(person.wage) +
+                  ' - Happiness: ' + str(person.happiness))
+
 
     def profit_report(self):
         for person in self.employees:
@@ -82,6 +111,11 @@ class CompanyStats:
         total = round(total * 100) / 100
         print('Profit made: £' + str(total) + '.')
         return total
+
+#  Constants
+happiness_inc_cap = 0.3
+
+#  Functions
 
 
 def readnames(list_people):
@@ -162,6 +196,8 @@ def do_something(this_company, input_command, not_hired_list):
                     print('Input not recognised.')
 
         # advance mechanism
+    elif input_command.lower() == 'hidden' or input_command.lower() == 'dd':
+        this_company.show_info()
     else:
         # No other processes recognised
         print('Command not recognised.')

@@ -18,7 +18,7 @@ from main import Employee
 
 
 def f(EX, EC, HP, TAC, AGE):
-    return ((EX+2)/2) ** 2 * (((EC +2)/2) * ((HP+2)/5) * (1 + (TAC+1)/(20*365)) * ((AGE)/(20*365))) * 500
+    return ((EX+2)/2) ** 2 * (((EC +2)/2) * ((HP+2)/5) * (1 + (TAC+1)/(20*365)) * ((AGE)/(20*365))) * 750
 
 
 emp1 = Employee('David Miles', 35, 9, 5, 8, 0, 1000)
@@ -27,10 +27,10 @@ emp3 = Employee('Sarah Gold', 30, 6, 6, 4, 0, 400)
 emp4 = Employee('Carl Smith', 53, 9, 5, 4, 0, 1200)
 emp5 = Employee('Lucy Newton', 18, 3, 9, 7, 0, 100)
 
-emp1.tac = 20*365
-emp2.tac = 365*3
-emp3.tac = 365*5
-emp4.tac = 365*10
+emp1.tac = 0
+emp2.tac = 0
+emp3.tac = 0
+emp4.tac = 0
 emp5.tac = 0 #  365*20
 
 EMP_LIST = [emp1, emp2, emp3, emp4, emp5]
