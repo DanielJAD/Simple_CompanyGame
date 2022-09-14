@@ -102,3 +102,10 @@ For now - remove detriment of profits with increased time - this will be conside
 - Add algorithm for what employees feel they are worth.
 -- Will need to add in length of time at company.
 
+_____________________________________________________________________________
+
+14/09/2022
+
+Decreasing happiness due to expected wage, to a proposed steady-state, proved more difficult.
+This will be put on hold as other aspects are considered. The cap on decreases has been reduced in the meantime.
+
