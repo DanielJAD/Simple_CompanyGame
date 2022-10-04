@@ -1,5 +1,6 @@
 import numpy as np
 
+
 class Employee:
     def __init__(self, name, age, expertise, happiness, ethic, status, wage):
         self.name = name
@@ -12,7 +13,8 @@ class Employee:
         self.tac = 0
         self.dtw = (self.wage / 50)  # Time for initial training etc.
         self.expected_wage = ((self.expertise + 2) / 2) ** 2 * (((self.ethic + 2) / 2) * ((self.happiness + 2) / 5) *
-                                                          (1 + (self.tac+1)/(20*365)) * (self.age / (20 * 365))) * 750
+                                                                (1 + (self.tac + 1) / (20 * 365)) * (
+                                                                            self.age / (20 * 365))) * 750
 
     def hire(self):
         self.status = 1
@@ -49,18 +51,28 @@ class CompanyStats:
 
     def advance_time(self, days):
 
-        weeks_adv = int(np.floor((self.time % 7 + days)/7))
+        weeks_adv = int(np.floor((self.time % 7 + days) / 7))
         days_adv = (days + (weeks_adv * 7)) % 7
         #  print('---- WEEKS ADVANCE - ' + str(weeks_adv))
-        for i in range(1, weeks_adv+1):
+        for i in range(1, weeks_adv + 1):
             print('\nA week was advanced... (week ' + str(i) + ')...')
             self.funds += self.gen_gross_company_profits(7)
             self.time += 7
             for person in self.employees:
-                if person.expected_wage > person.wage:
-                    person.happiness -= max(0.5, abs((person.expected_wage/person.wage)/10 + person.happiness/30))
+
+                # Happiness impacts ethic (Wage impacts happiness)
+                if person.happiness > 5:
+                    person.ethic = max(10.0, person.ethic + round(person.happiness/50, 2))
                 else:
-                    person.happiness += min(happiness_inc_cap, abs((person.expected_wage/person.wage)/10 - person.happiness/30))
+                    person.ethic = min(0.0, person.ethic - round(person.happiness/50, 2))
+
+
+                #  Wage impacts happiness
+                if person.expected_wage > person.wage:
+                    person.happiness -= max(0.5, abs((person.expected_wage / person.wage) / 10 + person.happiness / 30))
+                else:
+                    person.happiness += min(happiness_inc_cap,
+                                            abs((person.expected_wage / person.wage) / 10 - person.happiness / 30))
                 person.happiness = min(10, person.happiness)
                 person.happiness = max(0, person.happiness)
                 person.tac += 7
@@ -76,7 +88,6 @@ class CompanyStats:
         for person in self.employees:
             print(person.name + ' - Expected: £' + str(person.expected_wage) + ' - Paid: £' + str(person.wage) +
                   ' - Happiness: ' + str(person.happiness))
-
 
     def profit_report(self):
         for person in self.employees:
@@ -101,7 +112,7 @@ class CompanyStats:
         total = 0
         for employee in self.employees:
             if employee.dtw > 0:
-                print(employee.name + ' is not available to work for ' +str(employee.dtw) + ' days.')
+                print(employee.name + ' is not available to work for ' + str(employee.dtw) + ' days.')
                 total += employee.gen_gross_profits(min(time, employee.dtw), 0)
                 if time > employee.dtw:
                     print(employee.name + ' has returned to work.')
@@ -112,8 +123,10 @@ class CompanyStats:
         print('Profit made: £' + str(total) + '.')
         return total
 
+
 #  Constants
 happiness_inc_cap = 0.3
+
 
 #  Functions
 
@@ -253,6 +266,7 @@ emp2 = Employee('Jack White', 25, 7, 4, 2, 0, 500)
 emp3 = Employee('Sarah Gold', 30, 6, 6, 4, 0, 400)
 emp4 = Employee('Carl Smith', 53, 9, 5, 4, 0, 1200)
 emp5 = Employee('Lucy Newton', 18, 3, 9, 7, 0, 100)
+
 
 def startUp():
     # Initialise the people available for hire
