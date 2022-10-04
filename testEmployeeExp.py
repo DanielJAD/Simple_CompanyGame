@@ -83,6 +83,8 @@ Per week
     dH/dT = 0 = EW - Hx => x = EW/H => dH/dT = EW - (EW/H) * H 
     
     H = EW/(EW + 1) - EW*x*H
+    
+    Some kind of exponentially decreasing formula? To solve later.
 '''
 
 happiness_inc_cap = 0.3
