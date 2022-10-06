@@ -12,9 +12,13 @@ class Employee:
         self.wage = wage
         self.tac = 0
         self.dtw = (self.wage / 50)  # Time for initial training etc.
-        self.expected_wage = ((self.expertise + 2) / 2) ** 2 * (((self.ethic + 2) / 2) * ((self.happiness + 2) / 5) *
-                                                                (1 + (self.tac + 1) / (20 * 365)) * (
-                                                                            self.age / (20 * 365))) * 750
+        self.expected_wage = (1 + (self.tac / 100)) * ((self.expertise + 2) / 2) ** 2 * (((self.ethic + 2) / 2) * ((
+                                                                                                                           self.happiness +
+                                                                                                                           2) / 5) *
+                                                                                         (1 + (self.tac + 1) / (
+                                                                                                     20 * 365)) * (
+                                                                                                 self.age / (
+                                                                                                     20 * 365))) * 750
 
     def hire(self):
         self.status = 1
@@ -29,6 +33,12 @@ class Employee:
 
     def gen_gross_profits(self, time, mod=1):
         return self.gen_profits(time) * mod - (time * self.wage)
+
+    def recalculate_expected_wage(self):
+        self.expected_wage = max(self.expected_wage, (1 + (self.tac / 100)) * ((self.expertise + 2) / 2) ** 2 * (((
+                                                                                                                   self.ethic + 2) / 2) * ((
+                               self.happiness + 2) / 5) * (1 + (self.tac + 1) / ( 20 * 365)) * (self.age / (
+                                                                                                 20 * 365))) * 750)
 
 
 class CompanyStats:
@@ -59,13 +69,12 @@ class CompanyStats:
             self.funds += self.gen_gross_company_profits(7)
             self.time += 7
             for person in self.employees:
-
+                person.recalculate_expected_wage()
                 # Happiness impacts ethic (Wage impacts happiness)
                 if person.happiness > 5:
-                    person.ethic = max(10.0, person.ethic + round(person.happiness/50, 2))
+                    person.ethic = min(10.0, round(person.ethic + round(person.happiness / 50, 2), 2))
                 else:
-                    person.ethic = min(0.0, person.ethic - round(person.happiness/50, 2))
-
+                    person.ethic = max(0.0, round(person.ethic - round(person.happiness / 50, 2), 2))
 
                 #  Wage impacts happiness
                 if person.expected_wage > person.wage:
@@ -87,7 +96,11 @@ class CompanyStats:
     def show_info(self):
         for person in self.employees:
             print(person.name + ' - Expected: £' + str(person.expected_wage) + ' - Paid: £' + str(person.wage) +
-                  ' - Happiness: ' + str(person.happiness))
+                  ' - Happiness: ' + str(person.happiness) + ' - Ethic: ' + str(person.ethic))
+
+    def show_info2(self):
+        for person in self.employees:
+            print(person.name + ' - TimeAtCompany: ' + str(person.tac))
 
     def profit_report(self):
         for person in self.employees:
@@ -211,6 +224,13 @@ def do_something(this_company, input_command, not_hired_list):
         # advance mechanism
     elif input_command.lower() == 'hidden' or input_command.lower() == 'dd':
         this_company.show_info()
+    elif input_command.lower() == 'hidden2' or input_command.lower() == 'dd2':
+        this_company.show_info2()
+    elif input_command.lower() == 'setup' or input_command.lower() == 'quick' and len(not_hired_list) == 5:
+        print('Setting up...')
+        this_company.hire(not_hired_list[0], not_hired_list)  # Hire David Miles
+        this_company.hire(not_hired_list[3], not_hired_list)  # Hire Lucy Newton
+        this_company.advance_time(100)  # Advance time 100 days.
     else:
         # No other processes recognised
         print('Command not recognised.')
