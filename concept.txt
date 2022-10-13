@@ -102,3 +102,27 @@ For now - remove detriment of profits with increased time - this will be conside
 - Add algorithm for what employees feel they are worth.
 -- Will need to add in length of time at company.
 
+_____________________________________________________________________________
+
+13/10/2022
+
+Adding employee training.
+
+To do
+- Random generation of potential employees.
+- Employee "screening" get a feel for their stats and work ethic, etc.
+- Hidden stat - company loyalty. An employee that is fired enters the "hirable" field - but if you've just fired them,
+and they hate the company - they won't want to accept an offer.
+- This hidden stat can go into another future update: Employees threatening to leave. If they're unhappy or if their pay
+ is poor, a warning will come up when advancing (and it won't come up again for x days/weeks) to state that they aren't
+ happy, and they may threaten to leave.
+    - This will break up large time advancements where employees are not happy.
+    - A loyal employee will be more unlikely to threaten to leave (and time at company plays a factor).
+
+
+Future
+- Database integration - the entire point of this project!
+- Making an offer to potential employees, the chance that they'll accept it.
+- "Hirable" employees being taken by other companies - making them more valuable and background stat increases (**?)
+- Employee retirement
+- Employees getting too upset to continue
