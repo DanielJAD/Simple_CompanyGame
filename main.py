@@ -228,6 +228,9 @@ def do_something(this_company, input_command, not_hired_list):
     elif input_command.lower() == 'report' or input_command.lower() == 'r':
         print('Company Report...')
         companyReport(this_company, not_hired_list)
+    elif input_command.lower() == 'train' or input_command.lower() == 't':
+        print('Company Report...')
+        companyReport(this_company, not_hired_list)
     elif input_command.lower() == 'advance' or input_command.lower() == 'a' or input_command.split(' ')[0].lower() \
             == 'advance' or input_command.split(' ')[0].lower() == 'a':
         if len(input_command.split(' ')) != 1 and input_command.split(' ')[1].isdigit():
@@ -279,6 +282,31 @@ def hire_mechanism(company, not_hired_list):
 
 
 def fire_mechanism(company, not_hired_list):
+    if len(company.employees) == 0:
+        print('The company has no employees. No one can be fired.')
+        return
+    print('Who do you wish to fire? :')
+    enum = 1
+    for person in company.employees:
+        print(str(enum) + ': ' + person.name + ' - Wage: ' + str(person.wage) + ' - Redundancy cost : ' +
+              str(person.wage * 5) + '.')
+        enum += 1
+    choice = 'C'
+    #  print(' ENUM VALUE IS  ' + str(enum))  - testing purposes
+    while choice.lower() != 'R' and choice.lower() != 'quit':
+        choice = input('Who do you wish to fire? Send R to exit.')
+        if 1 <= int(choice) <= (enum - 1):
+            confirm = input('Confirm firing ' + company.employees[int(choice) - 1].name + '? Y/N: ')
+            if confirm.lower() == 'y':
+                print(company.employees[int(choice) - 1].name + ' fired.')
+                company.funds -= company.employees[int(choice) - 1].wage * 5
+                company.fire(company.employees[int(choice) - 1], not_hired_list)
+            else:
+                print('Firing not confirmed. Process exited.')
+            break
+
+
+def train_mechanism(company, not_hired_list):
     if len(company.employees) == 0:
         print('The company has no employees. No one can be fired.')
         return
