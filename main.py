@@ -18,9 +18,9 @@ class Employee:
                                                                                                                            self.happiness +
                                                                                                                            2) / 5) *
                                                                                          (1 + (self.tac + 1) / (
-                                                                                                     20 * 365)) * (
+                                                                                                 20 * 365)) * (
                                                                                                  self.age / (
-                                                                                                     20 * 365))) * 750
+                                                                                                 20 * 365))) * 750
 
     def hire(self):
         self.status = 1
@@ -38,9 +38,20 @@ class Employee:
 
     def recalculate_expected_wage(self):
         self.expected_wage = max(self.expected_wage, (1 + (self.tac / 100)) * ((self.expertise + 2) / 2) ** 2 * (((
-                                                                                                                   self.ethic + 2) / 2) * ((
-                               self.happiness + 2) / 5) * (1 + (self.tac + 1) / ( 20 * 365)) * (self.age / (
-                                                                                                 20 * 365))) * 750)
+                                                                                                                          self.ethic + 2) / 2) * (
+                                                                                                                             (
+                                                                                                                                     self.happiness + 2) / 5) * (
+                                                                                                                             1 + (
+                                                                                                                                 self.tac + 1) / (
+                                                                                                                                         20 * 365)) * (
+                                                                                                                             self.age / (
+                                                                                                                             20 * 365))) * 750)
+
+    def training_experise(self, inc):
+        if self.expertise + inc > 10:
+            self.expertise = 10
+        else:
+            self.expertise += inc
 
 
 class CompanyStats:
@@ -139,6 +150,19 @@ class CompanyStats:
         return total
 
     def train_employee(self, employee, time):
+
+        if employee.expertise < 1:
+            employee.dtw += 21
+            employee.training_experise(1-employee.expertise)
+            self.funds -= 100
+        else:
+            employee.dtw += 7*time
+            self.funds -= get_training_cost(employee, time)
+            employee.training_experise(time*0.2)
+
+
+
+
         # Don't put a warning for if their expertise is 10 here - put it before this is called.
 
         # If expertise is < 1, then a flat cost will take them to expertise 1, in 3 weeks.
@@ -160,13 +184,25 @@ class CompanyStats:
         #
 
 
-
-
 #  Constants
 happiness_inc_cap = 0.3
 
 
 #  Functions
+
+def training_cost(expertise_in):
+    #if expertise_in < 1:
+    #    return 100
+    #else:
+        return 100 * math.exp((expertise_in - 1) * (math.log(50) / 8))
+
+
+def get_training_cost(person, weeks):
+    cost = 0
+    for time in range(1, weeks):
+        print(str(time) + ' weeks passed.... (test)')
+        cost += training_cost(person.expertise)
+        person.expertise += 0.2
 
 
 def readnames(list_people):
@@ -306,26 +342,50 @@ def fire_mechanism(company, not_hired_list):
             break
 
 
-def train_mechanism(company, not_hired_list):
+def train_mechanism(company):
     if len(company.employees) == 0:
-        print('The company has no employees. No one can be fired.')
+        print('The company has no employees. No one can be trained.')
         return
-    print('Who do you wish to fire? :')
+    print('Who do you wish to train? :')
     enum = 1
     for person in company.employees:
-        print(str(enum) + ': ' + person.name + ' - Wage: ' + str(person.wage) + ' - Redundancy cost : ' +
-              str(person.wage * 5) + '.')
+        if person.expertise < 1:
+            print(str(enum) + ': ' + person.name + ' - Expertise: ' + str(person.expertise) + ' - Fundamental Training'
+                  + 'Package Cost: ' + str(100) + '.')
+        elif person.expertise < 10:
+            print(str(enum) + ': ' + person.name + ' - Expertise: ' + str(person.expertise) + ' - Cost Per Week:'
+                  + str(training_cost(person.expertise)) + '.')
+        else:
+            print(str(enum) + ': ' + person.name + ' [Cannot be trained, they have nothing more to learn].')
         enum += 1
     choice = 'C'
     #  print(' ENUM VALUE IS  ' + str(enum))  - testing purposes
     while choice.lower() != 'R' and choice.lower() != 'quit':
-        choice = input('Who do you wish to fire? Send R to exit.')
+        choice = input('Who do you wish to train? Send R to exit.')
         if 1 <= int(choice) <= (enum - 1):
-            confirm = input('Confirm firing ' + company.employees[int(choice) - 1].name + '? Y/N: ')
-            if confirm.lower() == 'y':
-                print(company.employees[int(choice) - 1].name + ' fired.')
-                company.funds -= company.employees[int(choice) - 1].wage * 5
-                company.fire(company.employees[int(choice) - 1], not_hired_list)
+            chosen_employee = company.employees[int(choice) - 1]
+            if not chosen_employee.expertise < 10:
+                print(chosen_employee.name + ' cannot be trained!')
+                continue
+            confirm = input('Train  ' + chosen_employee.name + '? Y/N: ')
+            if confirm.lower() == 'y' and not chosen_employee.expertise < 1:
+                choice_2 = 'C'
+                while choice_2.lower() != 'R' and choice_2.lower() != 'quit':
+                    choice_2 = input('Train ' + chosen_employee.name + ' for how long? :')
+                    if not choice_2.isdigit():
+                        print('Invalid Input!')
+                    elif (not int(choice_2) > 0) or (not int(choice_2) < 13):
+                        print('Number of weeks training must be between 1 and 12.')
+                    else:
+                        input('This will cost £' + str(get_training_cost(chosen_employee, choice_2)) + '. Confirm?' )
+
+            elif confirm.lower() == 'y':
+                input_2 = input('Send ' + chosen_employee.name + ' on basic training for 3 weeks? Y/N:')
+                if input_2.lower != 'y' and input_2.lower != 'yes':
+                    print('Training not confirmed. Process exited.')
+                else:
+                    print(chosen_employee.name + 'sent on training course at the cost of £100.')
+                    company.funds -= 100
             else:
                 print('Firing not confirmed. Process exited.')
             break
