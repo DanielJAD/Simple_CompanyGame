@@ -194,7 +194,7 @@ def training_cost(expertise_in):
     #if expertise_in < 1:
     #    return 100
     #else:
-        return 100 * math.exp((expertise_in - 1) * (math.log(50) / 8))
+        return round(100 * math.exp((expertise_in - 1) * (math.log(50) / 8)))
 
 
 def get_training_cost(person, weeks):
@@ -203,6 +203,7 @@ def get_training_cost(person, weeks):
         print(str(time) + ' weeks passed.... (test)')
         cost += training_cost(person.expertise)
         person.expertise += 0.2
+    return cost
 
 
 def readnames(list_people):
@@ -265,8 +266,8 @@ def do_something(this_company, input_command, not_hired_list):
         print('Company Report...')
         companyReport(this_company, not_hired_list)
     elif input_command.lower() == 'train' or input_command.lower() == 't':
-        print('Company Report...')
-        companyReport(this_company, not_hired_list)
+        print('Train Employee...')
+        train_mechanism(this_company)
     elif input_command.lower() == 'advance' or input_command.lower() == 'a' or input_command.split(' ')[0].lower() \
             == 'advance' or input_command.split(' ')[0].lower() == 'a':
         if len(input_command.split(' ')) != 1 and input_command.split(' ')[1].isdigit():
@@ -344,12 +345,18 @@ def fire_mechanism(company, not_hired_list):
 
 def train_mechanism(company):
     if len(company.employees) == 0:
+        # If there's no employees, selecting training does nothing - return.
         print('The company has no employees. No one can be trained.')
         return
+
     print('Who do you wish to train? :')
     enum = 1
+
+    # Each person in the company is given the status of their training availability.
     for person in company.employees:
-        if person.expertise < 1:
+        if person.dtw > 0:
+            print(str(enum) + ': ' + person.name + ' [Cannot be trained, they are currently not available to work].')
+        elif person.expertise < 1:
             print(str(enum) + ': ' + person.name + ' - Expertise: ' + str(person.expertise) + ' - Fundamental Training'
                   + 'Package Cost: ' + str(100) + '.')
         elif person.expertise < 10:
@@ -361,33 +368,63 @@ def train_mechanism(company):
     choice = 'C'
     #  print(' ENUM VALUE IS  ' + str(enum))  - testing purposes
     while choice.lower() != 'R' and choice.lower() != 'quit':
-        choice = input('Who do you wish to train? Send R to exit.')
+        # Keep user within this loop until they intentionally quit.
+        choice = input('Who do you wish to train? Send R to exit :')
         if 1 <= int(choice) <= (enum - 1):
+            # Select a valid choice (each employee has an enum)
             chosen_employee = company.employees[int(choice) - 1]
-            if not chosen_employee.expertise < 10:
+
+            # If the employee doesn't benefit from training they cannot be trained.
+            if not chosen_employee.expertise < 10 or chosen_employee.dtw > 0:
                 print(chosen_employee.name + ' cannot be trained!')
                 continue
+
+            # Otherwise confirm training.
             confirm = input('Train  ' + chosen_employee.name + '? Y/N: ')
+
             if confirm.lower() == 'y' and not chosen_employee.expertise < 1:
+                # The employee mas more than basic knowledge, so has the usual training process.
+
                 choice_2 = 'C'
                 while choice_2.lower() != 'R' and choice_2.lower() != 'quit':
+                    # Keep user in this loop until they intentionally quit.
+
                     choice_2 = input('Train ' + chosen_employee.name + ' for how long? :')
                     if not choice_2.isdigit():
+                        # The input choice for length of training was not a digit, so the loop resets.
                         print('Invalid Input!')
                     elif (not int(choice_2) > 0) or (not int(choice_2) < 13):
+                        # The input was valid, but training can only be done for 1 to 12 weeks - the loop resets.
                         print('Number of weeks training must be between 1 and 12.')
                     else:
-                        input('This will cost £' + str(get_training_cost(chosen_employee, choice_2)) + '. Confirm?' )
+                        # The input was valid, so give them the price of the training and final confirmation.
+                        choice_3 = input('This will cost £' + str(get_training_cost(chosen_employee, int(choice_2))) +
+                                         '. '
+                                                                                                            'Confirm? :')
+                        if choice_3.lower() == 'y' or choice_3 == 'yes':
+                            # Person confirmed, price is confirmed, so perform the training.
+                            print('Training confirmed for ' + chosen_employee.name + '.')
+                            company.train_employee(chosen_employee, int(choice_2))
+                            # Break the loop, a command was issued.
+                            break
+                        else:
+                            print('Training not confirmed. Process exited')
+                            # Break the loop, training for this person wasn't confirmed, so reset.
+                            break
 
             elif confirm.lower() == 'y':
+                # Training is confirmed, but the employee has below basic knowledge. So basic training is offered.
+
                 input_2 = input('Send ' + chosen_employee.name + ' on basic training for 3 weeks? Y/N:')
                 if input_2.lower != 'y' and input_2.lower != 'yes':
                     print('Training not confirmed. Process exited.')
                 else:
                     print(chosen_employee.name + 'sent on training course at the cost of £100.')
-                    company.funds -= 100
+                    company.train_employee(chosen_employee, 0)
             else:
-                print('Firing not confirmed. Process exited.')
+                # Employee training wasn't given a value, so exit the process.
+                print('Training not confirmed. Process exited.')
+                break
             break
 
 
