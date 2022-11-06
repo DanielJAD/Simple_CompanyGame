@@ -15,12 +15,9 @@ class Employee:
         self.tac = 0
         self.dtw = (self.wage / 50)  # Time for initial training etc.
         self.expected_wage = (1 + (self.tac / 100)) * ((self.expertise + 2) / 2) ** 2 * (((self.ethic + 2) / 2) * ((
-                                                                                                                           self.happiness +
-                                                                                                                           2) / 5) *
-                                                                                         (1 + (self.tac + 1) / (
-                                                                                                 20 * 365)) * (
-                                                                                                 self.age / (
-                                                                                                 20 * 365))) * 750
+                              self.happiness + 2) / 5) * (1 + (self.tac + 1) / (20 * 365)) *
+                            (self.age / (20 * 365))) * 750
+        self.training_days = 0
 
     def hire(self):
         self.status = 1
@@ -38,14 +35,8 @@ class Employee:
 
     def recalculate_expected_wage(self):
         self.expected_wage = max(self.expected_wage, (1 + (self.tac / 100)) * ((self.expertise + 2) / 2) ** 2 * (((
-                                                                                                                          self.ethic + 2) / 2) * (
-                                                                                                                             (
-                                                                                                                                     self.happiness + 2) / 5) * (
-                                                                                                                             1 + (
-                                                                                                                                 self.tac + 1) / (
-                                                                                                                                         20 * 365)) * (
-                                                                                                                             self.age / (
-                                                                                                                             20 * 365))) * 750)
+                       self.ethic + 2) / 2) * ((self.happiness + 2) / 5) * (1 + (self.tac + 1) / (20 * 365)) * (
+                       self.age / (20 * 365))) * 750)
 
     def training_experise(self, inc):
         if self.expertise + inc > 10:
@@ -95,9 +86,14 @@ class CompanyStats:
                 else:
                     person.happiness += min(happiness_inc_cap,
                                             abs((person.expected_wage / person.wage) / 10 - person.happiness / 30))
-                person.happiness = min(10, person.happiness)
-                person.happiness = max(0, person.happiness)
+                person.happiness = min(10, round(person.happiness, 2))
+                person.happiness = max(0, round(person.happiness, 2))
                 person.tac += 7
+
+                if person.training_days > 0:
+                    person.expertise += min(7, person.training_days) * 0.03
+                    person.training_days -= min(7, person.training_days)
+
 
         if days_adv > 0:
             print('\nAdvancing ' + str(days_adv) + ' days...')
@@ -105,15 +101,18 @@ class CompanyStats:
             self.time += days_adv
             for person in self.employees:
                 person.tac += days_adv
+                if person.training_days > 0:
+                    person.expertise += 0.03
+                    person.training_days -= 1
 
     def show_info(self):
         for person in self.employees:
-            print(person.name + ' - Expected: £' + str(person.expected_wage) + ' - Paid: £' + str(person.wage) +
+            print(person.name + ' - Expected: £' + str(round(person.expected_wage)) + ' - Paid: £' + str(person.wage) +
                   ' - Happiness: ' + str(person.happiness) + ' - Ethic: ' + str(person.ethic))
 
     def show_info2(self):
         for person in self.employees:
-            print(person.name + ' - TimeAtCompany: ' + str(person.tac))
+            print(person.name + ' - TimeAtCompany: ' + str(person.tac) + ' - Expertise: ' + str(person.expertise))
 
     def profit_report(self):
         for person in self.employees:
@@ -153,15 +152,14 @@ class CompanyStats:
 
         if employee.expertise < 1:
             employee.dtw += 21
-            employee.training_experise(1-employee.expertise)
+            employee.training_days += 21
+            employee.training_experise(1 - employee.expertise)
             self.funds -= 100
         else:
-            employee.dtw += 7*time
+            employee.dtw += 7 * time
+            employee.training_days += 7 * time
             self.funds -= get_training_cost(employee, time)
-            employee.training_experise(time*0.2)
-
-
-
+            employee.training_experise(time * 0.2)
 
         # Don't put a warning for if their expertise is 10 here - put it before this is called.
 
@@ -191,10 +189,10 @@ happiness_inc_cap = 0.3
 #  Functions
 
 def training_cost(expertise_in):
-    #if expertise_in < 1:
+    # if expertise_in < 1:
     #    return 100
-    #else:
-        return round(100 * math.exp((expertise_in - 1) * (math.log(50) / 8)))
+    # else:
+    return round(100 * math.exp((expertise_in - 1) * (math.log(50) / 8)))
 
 
 def get_training_cost(person, weeks):
@@ -203,7 +201,7 @@ def get_training_cost(person, weeks):
         print(str(time) + ' weeks passed.... (test)')
         cost += training_cost(person.expertise)
         person.expertise += 0.2
-    return cost
+    return round(cost)
 
 
 def readnames(list_people):
@@ -367,9 +365,19 @@ def train_mechanism(company):
         enum += 1
     choice = 'C'
     #  print(' ENUM VALUE IS  ' + str(enum))  - testing purposes
-    while choice.lower() != 'R' and choice.lower() != 'quit':
+    while choice.lower() != 'q' and choice.lower() != 'quit':
         # Keep user within this loop until they intentionally quit.
-        choice = input('Who do you wish to train? Send R to exit :')
+        choice = input('Who do you wish to train? Send q to exit :')
+
+        if not choice.isdigit():
+            # An input that wasn't a number was entered, if it was quit, then process this, otherwise return invalid.
+            if choice.lower() == 'q' or choice.lower() == 'quit':
+                print('Quitting...')
+            else:
+                # The input was not an employee enum, and wasn't quit. So it's invalid. Return the loop.
+                print('Invalid Input!')
+            continue
+
         if 1 <= int(choice) <= (enum - 1):
             # Select a valid choice (each employee has an enum)
             chosen_employee = company.employees[int(choice) - 1]
@@ -400,7 +408,7 @@ def train_mechanism(company):
                         # The input was valid, so give them the price of the training and final confirmation.
                         choice_3 = input('This will cost £' + str(get_training_cost(chosen_employee, int(choice_2))) +
                                          '. '
-                                                                                                            'Confirm? :')
+                                         'Confirm? :')
                         if choice_3.lower() == 'y' or choice_3 == 'yes':
                             # Person confirmed, price is confirmed, so perform the training.
                             print('Training confirmed for ' + chosen_employee.name + '.')

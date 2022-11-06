@@ -126,3 +126,24 @@ Future
 - "Hirable" employees being taken by other companies - making them more valuable and background stat increases (**?)
 - Employee retirement
 - Employees getting too upset to continue
+
+------------------------------------------------------------------------------------
+
+06/11/2022
+
+Finishing the training mechanism.
+
+Next:
+- SQL integration.
+--- Read SQL data to load your current stats.
+--- Option to start new saved game, with a save name.
+--- Option to save your progress.
+--- Moderator can delete saves.
+
+- Better interface for getting data - GUI that always states funds?
+- Ability to plot funds?
+- Autogenerate new workers that can be hired.
+- Happiness seems to be a significant issue - almost all workers drop to 0 too fast.
+- Workers should quit by the time they reach 0 happiness.
+- Option to adjust workers salary - give them raises.
+- Workers threaten to quit if not given better salary (so they don't just plummet to 0 happiness).
