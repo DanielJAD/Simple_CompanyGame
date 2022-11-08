@@ -123,7 +123,7 @@ and they hate the company - they won't want to accept an offer.
 Future
 - Database integration - the entire point of this project!
 - Making an offer to potential employees, the chance that they'll accept it.
-- "Hirable" employees being taken by other companies - making them more valuable and background stat increases (**?)
+- "Hireable" employees being taken by other companies - making them more valuable and background stat increases (**?)
 - Employee retirement
 - Employees getting too upset to continue
 

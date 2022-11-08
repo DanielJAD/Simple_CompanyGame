@@ -73,7 +73,10 @@ class CompanyStats:
             self.funds += self.gen_gross_company_profits(7)
             self.time += 7
             for person in self.employees:
+
+                # Recalculate what the person thinks they should be paid.
                 person.recalculate_expected_wage()
+
                 # Happiness impacts ethic (Wage impacts happiness)
                 if person.happiness > 5:
                     person.ethic = min(10.0, round(person.ethic + round(person.happiness / 50, 2), 2))
@@ -90,6 +93,7 @@ class CompanyStats:
                 person.happiness = max(0, round(person.happiness, 2))
                 person.tac += 7
 
+                # If person is training, increase their expertise
                 if person.training_days > 0:
                     person.expertise += min(7, person.training_days) * 0.03
                     person.training_days -= min(7, person.training_days)
@@ -151,15 +155,19 @@ class CompanyStats:
     def train_employee(self, employee, time):
 
         if employee.expertise < 1:
+
+            # The training to 1 expertise might as well occur in one go - no need to set training days.
             employee.dtw += 21
-            employee.training_days += 21
+            self.funds -= 300
             employee.training_experise(1 - employee.expertise)
-            self.funds -= 100
+
         else:
+
+            # Add the time to train as a variable that will decrement with the advance_time() command.
+            # Take the funds immediately.
             employee.dtw += 7 * time
             employee.training_days += 7 * time
             self.funds -= get_training_cost(employee, time)
-            employee.training_experise(time * 0.2)
 
         # Don't put a warning for if their expertise is 10 here - put it before this is called.
 
@@ -197,10 +205,15 @@ def training_cost(expertise_in):
 
 def get_training_cost(person, weeks):
     cost = 0
-    for time in range(1, weeks):
-        print(str(time) + ' weeks passed.... (test)')
-        cost += training_cost(person.expertise)
-        person.expertise += 0.2
+
+    # The issue is that training will be based on their expertise, but if they're sent on 12 weeks, this is an
+    # increase in expertise of 2.4, so this could potentially be too cheap.
+    # So instead give no benefit to sending employees on many weeks at a time, rather than doing it separately.
+    # Simulate the addition of expertise.
+
+    for time in range(0, weeks):
+        cost += training_cost(person.expertise + (0.2 * (weeks-1)))
+        print(str(time+1) + ' weeks passed.... (test) - Cost here: ' + str(cost))
     return round(cost)
 
 
@@ -412,6 +425,7 @@ def train_mechanism(company):
                         if choice_3.lower() == 'y' or choice_3 == 'yes':
                             # Person confirmed, price is confirmed, so perform the training.
                             print('Training confirmed for ' + chosen_employee.name + '.')
+                            # ______________ TRAINING ISSUED _______________
                             company.train_employee(chosen_employee, int(choice_2))
                             # Break the loop, a command was issued.
                             break
@@ -427,6 +441,7 @@ def train_mechanism(company):
                 if input_2.lower != 'y' and input_2.lower != 'yes':
                     print('Training not confirmed. Process exited.')
                 else:
+                    # ______________ TRAINING ISSUED _______________
                     print(chosen_employee.name + 'sent on training course at the cost of £100.')
                     company.train_employee(chosen_employee, 0)
             else:
