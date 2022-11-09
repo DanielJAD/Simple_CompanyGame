@@ -169,26 +169,6 @@ class CompanyStats:
             employee.training_days += 7 * time
             self.funds -= get_training_cost(employee, time)
 
-        # Don't put a warning for if their expertise is 10 here - put it before this is called.
-
-        # If expertise is < 1, then a flat cost will take them to expertise 1, in 3 weeks.
-
-        # Training can go from 1 week to 12 weeks (3 months).
-
-        # Decided that the function for determining cost will be:
-        # 100*( (1 - expertise) * ( log(50)/8) )
-        # Consider no floor for expertise (i.e 9.3 expertise can be worked with).
-        cost = 100 * math.exp((employee.expertise - 1) * (math.log(50) / 8))
-
-        # Price should be re-evaluated for each week that is assigned - an employee of 10 ethic, but 1 expertise
-        # can be trained for 12 weeks at minimal cost, potentially increasing their expertise by 0.2*12 = 2.4.
-
-        # Project the range of cost and range of expertise increase for the given employee and training time.
-
-        # Make improvement static/dependent on the employee's ethic.
-        # Max expertise improvement per week = 0.2, min 0.02 :  (ethic/10)*0.2
-        #
-
 
 #  Constants
 happiness_inc_cap = 0.3
@@ -197,9 +177,6 @@ happiness_inc_cap = 0.3
 #  Functions
 
 def training_cost(expertise_in):
-    # if expertise_in < 1:
-    #    return 100
-    # else:
     return round(100 * math.exp((expertise_in - 1) * (math.log(50) / 8)))
 
 
