@@ -440,9 +440,17 @@ emp5 = Employee('Lucy Newton', 18, 3, 9, 7, 0, 100)
 
 def startUp():
     # Initialise the people available for hire
+
+    # Load here, check database for saves.
+
+    # If call empty, ask to make a new saved game - this will save it to the database.
+    # If no, it runs a temp game.
+
+    # New game:
+    # # Initialise the non-hired list
     not_hired_list = [emp1, emp2, emp3, emp4, emp5]
 
-    # Initialise the company
+    # # Initialise the company
     this_company = CompanyStats()
 
     in_put = 'default'
